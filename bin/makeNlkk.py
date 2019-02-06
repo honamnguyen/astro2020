@@ -16,7 +16,6 @@ import orphics.cosmology as cosmo
 parser = argparse.ArgumentParser(description='Run a Fisher test.')
 parser.add_argument('expName', type=str,help='The name of the experiment in input/params.ini')
 parser.add_argument('lensName',type=str,help='The name of the CMB lensing section in input/params.ini. ',default="")
-#parser.add_argument('saveName', nargs='?',type=str,help='Suffix for plots ',default="")
 parser.add_argument('saveName',type=str,help='Suffix for plots ',default="")
 
 args = parser.parse_args()
@@ -36,8 +35,6 @@ Config = SafeConfigParser()
 Config.optionxform=str
 Config.read(iniFile)
 
-#fskyList = ['04000','08000','16000']
-#noiseList = ['SENS0','SENS1','SENS2']
 nIter = np.inf
 
 if nIter == 1:
@@ -45,10 +42,8 @@ if nIter == 1:
 else:
     iterName = '_iterOn'
 
-#mnus = np.zeros([len(fskyList),len(noiseList)])
 print "Run with testNlkk lensing or lensTT ",iterName
 outDir = 'output/'+saveName+'_'
-#for noiseNow,fskyNow in zip(noiseList,fskyList):
 i = 0
 
 #cambRoot = 'data/Aug6_highAcc_CDM'
@@ -56,18 +51,6 @@ cambRoot = '../quicklens/quicklens/data/cl/planck_wp_highL/planck_lensing_wp_hig
 #cambRoot = '/home/hnnguyen/CAMB-0.1.6.1/base_plikHM_TT_lowTEB_minimum_fudgedtotaup06_lmax5000'
 theoryOverride = cosmo.loadTheorySpectraFromCAMB(cambRoot,unlensedEqualsLensed=False,useTotal=False,TCMB = TCMB,lpad=bigell) #,get_dimensionless=True)
 #theoryOverride = None
-
-'''
-# Get CMB noise and pad it with inf
-tellmin,tellmax = list_from_config(Config,expName,'tellrange')
-pellmin,pellmax = list_from_config(Config,expName,'pellrange')
-ellT,nlTT,dummy = np.loadtxt('tests/TT/SOV3_T_default1-4-2_noisecurves_deproj1_'+noiseNow+'_mask_'+fskyNow+'_ell_TT_yy.txt',unpack=True)
-ellE,nlEE,nlBB = np.loadtxt('tests/EE-BB/SOV3_pol_default1-4-2_noisecurves_deproj1_'+noiseNow+'_mask_'+fskyNow+'_ell_EE_BB.txt',unpack=True)
-fnTT = cosmo.noise_pad_infinity(interp1d(ellT,nlTT,bounds_error=False,fill_value=np.inf),tellmin,tellmax)
-fnEE = cosmo.noise_pad_infinity(interp1d(ellE,nlEE,bounds_error=False,fill_value=np.inf),pellmin,pellmax)
-'''     
-# fnTT is dimensional from file        
-# Pad CMB lensing noise with infinity outside L ranges
 
 tellmin,tellmax = list_from_config(Config,expName,'tellrange')
 pellmin,pellmax = list_from_config(Config,expName,'pellrange')

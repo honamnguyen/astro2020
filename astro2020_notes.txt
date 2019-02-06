@@ -1,0 +1,125 @@
+PROCEDURE
+- WarmAndFuzzy Matter PS files taken from previous project for now
+- Get noise code from SO overview (more recent)?
+- orphics is up-to-date (core for noise code)
+
+COMMANDS
+- python tests/SO_nlkk.py testNlkk lensPolOnly Apr17_polOnly
+- python tests/SO_mnu.py testExp lensing Apr17_polOnly_deproj1_tau_0.002
+
+Experiment name: SOForecast, DM-18arcsec
+- Specify resolution, noise, t and p ranges
+- what is lmax for?
+Lensing option: gives polList
+
+
+Jan 17:
+
+*** From last time:
+
+bin/mpi_small_jiasim.py
+input/recon.ini
+data/*incre* - increasing overall CMB power?
+data/Aug6*incre*
+
+python ../../scripts/mpi_nersc 64 "python -W ignore bin/mpi_small_jiasim.py experiment_0.3arc_0.1uk -N 1000" -t 8 --queue "debug" -w "0:30:00"
+
+- change "cc_nam*" to change input cosmology
+
+- Old code (without Jia sim) gives the SNRs table, new code gives higher numbers:
+--->Using dl300!
+beam,fsky,noise,S/N
+0.3 0.1 0.1 33.9907539384
+0.3 0.1 0.5 5.05405703637
+0.3 0.025 0.1 16.9953769692
+0.3 0.025 0.5 2.52702851819
+0.1583 0.1 0.1 54.2824223738
+0.1583 0.1 0.5 6.59812050197
+0.1583 0.025 0.1 27.1412111869
+0.1583 0.025 0.5 3.29906025099
+
+- jiasim_grf only get shape and wcs from Jia's sims, nothing else. It outputs inputkk.csv
+
+- check with old code (mpi_small.py), not Jia's kk power, got 19 and 9.4 (compared to 20 and 10) -> good enough. 
+- Took almost 30 mins using "mpi_nersc 8 -t 16", and~ 10 mins with 64 -t 8
+
+- use mpi_small.py, add date to keep track, run the no kSZ case just by adding sections to recon.ini with the appropriate resolution and noise
+- trying to add a section to add ksz noise
+
+    try:
+        n2d_file_T = Config.get(exp_name,"noise_2d_file_T")
+        n2d_file_P = Config.get(exp_name,"noise_2d_file_P")
+	imapT = enmap.read_map(n2d_file_T)
+        imapP = enmap.read_map(n2d_file_P)
+        pa.add_noise_2d(nT=imapT,nP=imapP)
+    except:
+        noise_T = Config.getfloat(exp_name,"noise_T")
+        noise_P = Config.getfloat(exp_name,"noise_P")
+        lknee_T = Config.getfloat(exp_name,"lknee_T")
+        lknee_P = Config.getfloat(exp_name,"lknee_P")
+        alpha_T = Config.getfloat(exp_name,"alpha_T")
+	alpha_P = Config.getfloat(exp_name,"alpha_P")
+
+Jan 18:
+- add ksz by generating a separate ksz map
+
+Jan 19:
+- use enmap.MapGen, and convert the shape of power2d from (Nx,Ny) to (1,1,Nx,Ny) by power2d[None,None]
+
+date + if ksz:  190119 
+--->Using dl300!
+beam,fsky,noise,S/N
+0.167 0.5 0.5 10.9
+0.167 0.5 0.25 24.3
+0.167 0.25 0.5 7.7
+0.167 0.25 0.25 17.2
+0.167 0.1 0.5 4.9
+0.167 0.1 0.25 10.9
+
+date + if ksz:  190119 reionKSZ_
+--->Using dl300!
+beam,fsky,noise,S/N
+0.167 0.5 0.5 9.4
+0.167 0.5 0.25 19.0
+0.167 0.25 0.5 6.6
+0.167 0.25 0.25 13.4
+0.167 0.1 0.5 4.2
+0.167 0.1 0.25 8.5
+
+date + if ksz:  190119 bothKSZ_
+--->Using dl300!
+beam,fsky,noise,S/N
+0.167 0.5 0.5 5.4
+0.167 0.5 0.25 7.4
+0.167 0.25 0.5 3.8
+0.167 0.25 0.25 5.2
+0.167 0.1 0.5 2.4
+0.167 0.1 0.25 3.3
+
+Feb 1:
+- Update errorbar plot with new cov mat using plot_dm_errorbar.py
+- Note that the variance is for weighted average
+
+Feb 4:
+- Didn't get Apr17*delensingEff.csv by running SO_nlkk_delensing. Had to change gradCut to 2000
+- Seem like the addition to separate B from P is for only the Y leg
+
+Feb 5:
+- Modify orphics/lensing.py, pyfisher/lensInterface.py to include bellmin and bellmax just to the
+non-gradient leg (Y leg). Grad leg is E, small scale leg is B?
+- Code give delensing efficiency, Alens = 1.-eff
+
+- 10'' with 0.1 noise
+Emin=100 gives Alens=0.02
+Emin=300 gives 0.2
+- S4, tellrange = 30,4000, pellrange = 100,5000 gives Alens= 0.16
+
+- Finaly Summary
+10 arcsec res and no grad cut
+tellrange = 100,3000
+pellrange = 100,5000
+bellrange = 1000,5000
+A_lens=0.1 for 0.5 uK-arcmin
+A_lens=0.05 for 0.25 uK-arcmin
+Doesn’t matter if Tmin=Emin=30
+Doesn’t matter if Tmax=Pmax=30,000
