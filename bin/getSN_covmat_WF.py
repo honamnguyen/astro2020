@@ -13,14 +13,14 @@ import itertools
 ClsCDM = np.loadtxt('data/May21_matter2lens_WF_CDM_cut_ibarrier_iconc_fCls.csv')
 ClsFDM = np.loadtxt('data/May21_matter2lens_WF_FDM_1.0_cut_ibarrier_iconc_fCls.csv')
 
-beams = [0.167]
+beams = [0.25] #[0.167]
 fskys = [0.5,0.25,0.1]
-noises = [0.5,0.25] 
+noises = [0.5,0.25] #0.5,0.25
 
 diag = False
 dl300 = True
-date = '190119'
-ksz = '' # options: '','reionKSZ_', 'bothKSZ_'
+date = '190404' #'190119'
+ksz = 'bothKSZ_' # options: '','reionKSZ_', 'bothKSZ_'
 
 print 'date + if ksz: ',date,ksz
 

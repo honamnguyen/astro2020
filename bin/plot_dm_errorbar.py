@@ -7,14 +7,10 @@ mpl.rcParams.update({'font.family':'serif'})
 mpl.rcParams.update({'mathtext.fontset':'cm'})
 mpl.rcParams.update({'font.size': 18})
 mpl.rcParams['lines.linewidth'] = 3
-#dash1 = [10,5,2,5]
 color=itertools.cycle(['k','silver'])
 
-ClFile1 = 'data/May21_matter2lens_WF_FDM_1.0_cut_ibarrier_iconc_fCls.csv'
-Cls1 = np.loadtxt(ClFile1)
-
-ClFile = 'data/May21_matter2lens_WF_CDM_cut_ibarrier_iconc_fCls.csv'
-Cls = np.loadtxt(ClFile)
+Cls1 = np.loadtxt('data/May21_matter2lens_WF_FDM_1.0_cut_ibarrier_iconc_fCls.csv')
+Cls = np.loadtxt('data/May21_matter2lens_WF_CDM_cut_ibarrier_iconc_fCls.csv')
 
 #cdm = interp1d(Cls[:,0],Cls[:,1],bounds_error=True)
 fdm = interp1d(Cls1[:,0],Cls1[:,1],bounds_error=True)
@@ -27,11 +23,11 @@ l, = plt.plot(Cls[:,0],Cls[:,1],'c--',label='CDM')
 #l.set_dashes(dash1)
 
 Lrange = np.linspace(10000,40000,nbin)
-label = ['0.25 $\mu$K, 20,000 deg$^2$','0.5 $\mu$K, 20,000 deg$^2$']
+label = ['CMB-HD'] #['0.5 $\mu$K, 20,000 deg$^2$'] 
 ls = ['-','--']
 shiftFactor = 0. # to shift the errors bar for clarity
 
-noises = [0.25,0.5]
+noises = [0.5] #0.25
 fsky = 0.5
 
 #plt.gca().set_axis_off()
@@ -39,9 +35,9 @@ fsky = 0.5
 #plt.margins(0,0)
 
 for index in range(len(noises)):
-    ellBinEdges = np.load('data/190119_experiment_0.167arc_'+str(noises[index])+'uk_2000_2.912603855229585sqdeg_lbin_edges_dl300.npy')
+    ellBinEdges = np.load('data/190404_experiment_0.25arc_'+str(noises[index])+'uk_2000_reionKSZ_2.912603855229585sqdeg_lbin_edges_dl300.npy')
     ell  =  (ellBinEdges[1:] + ellBinEdges[:-1]) / 2
-    cov = np.load('data/190119_experiment_0.167arc_'+str(noises[index])+'uk_2000_2.912603855229585sqdeg_covmat_dl300.npy')
+    cov = np.load('data/190404_experiment_0.25arc_'+str(noises[index])+'uk_2000_reionKSZ_2.912603855229585sqdeg_covmat_dl300.npy')
     covDiag = cov.diagonal() * (2.912603855229585/41253.) / fsky
 
     # Calculating variance of bin data (weighted mean): 1/var = sum(1/var_i)
@@ -78,9 +74,9 @@ for index in range(len(noises)):
 plt.xlabel('$L$',size=24)
 plt.ylabel('$C_L^{\kappa\kappa}$',size=24)
 plt.legend(loc='upper right',ncol=1,fontsize=22)
-plt.xlim([10000,40000])
+plt.xlim([10000,38000])
 plt.ylim([1.3e-11,2.2e-10])
 plt.yscale('log')
-plt.show()
-#plt.savefig('output/dm_errorbar_tight.pdf')
+#plt.show()
+plt.savefig('output/dm_errorbar_15arcsec.pdf')
 #plt.savefig('output/dm_errorbar_tight.pdf', bbox_inches='tight', pad_inches=0.7)

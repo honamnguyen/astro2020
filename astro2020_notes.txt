@@ -123,3 +123,38 @@ A_lens=0.1 for 0.5 uK-arcmin
 A_lens=0.05 for 0.25 uK-arcmin
 Doesn’t matter if Tmin=Emin=30
 Doesn’t matter if Tmax=Pmax=30,000
+
+Apr 4:
+- Last command: python ../../scripts/mpi_nersc 64 "python -W ignore bin/mpi_small.py experiment_0.167arc_0.25uk -N 1000" -t 8 --queue "debug" -w "00:30:00"
+- Last command now: python ../../scripts/mpi_nersc 64 "python -W ignore bin/mpi_small_astro2020.py experiment_0.25arc_0.25uk -N 1000" -t 8 --queue "debug" -w "00:30:00"
+
+date + if ksz:  190404 
+--->Using dl300!
+beam,fsky,noise,S/N
+0.25 0.5 0.5 9.0
+0.25 0.5 0.25 20.0
+0.25 0.25 0.5 7.0
+0.25 0.25 0.25 14.0
+0.25 0.1 0.5 4.0
+0.25 0.1 0.25 9.0
+
+date + if ksz:  190404 reionKSZ_
+--->Using dl300!
+beam,fsky,noise,S/N
+0.25 0.5 0.5 8.0
+0.25 0.5 0.25 16.0
+0.25 0.25 0.5 6.0
+0.25 0.25 0.25 11.0
+0.25 0.1 0.5 4.0
+0.25 0.1 0.25 7.0
+
+date + if ksz:  190404 bothKSZ_
+--->Using dl300!
+beam,fsky,noise,S/N
+0.25 0.5 0.5 5.0
+0.25 0.5 0.25 7.0
+0.25 0.25 0.5 3.0
+0.25 0.25 0.25 5.0
+0.25 0.1 0.5 2.0
+0.25 0.1 0.25 3.0
+
