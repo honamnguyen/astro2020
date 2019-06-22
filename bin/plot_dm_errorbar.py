@@ -18,8 +18,11 @@ fdm = interp1d(Cls1[:,0],Cls1[:,1],bounds_error=True)
 nbin = 15
 
 fig = plt.figure(figsize=(9,7))
-l, = plt.plot(Cls1[:,0],Cls1[:,1],'m',label='$10^{-22}$eV FDM')
-l, = plt.plot(Cls[:,0],Cls[:,1],'c--',label='CDM')
+ax1 = fig.add_subplot(111)
+ax2 = ax1.twiny()
+
+l, = ax1.plot(Cls1[:,0],Cls1[:,1],'m',label='$10^{-22}$eV FDM')
+l, = ax1.plot(Cls[:,0],Cls[:,1],'c--',label='CDM')
 #l.set_dashes(dash1)
 
 Lrange = np.linspace(10000,40000,nbin)
@@ -64,19 +67,38 @@ for index in range(len(noises)):
     ys = np.array(ys)
         
     #yerr = np.sqrt(cov.diagonal() * (2.91260385523/41253.) / 0.1)
-    (_,caps,eb)=plt.errorbar(xs+shiftFactor,fdm(xs+shiftFactor),yerr=ys,ls='',ecolor=color.next(),capsize=5,label=label[index])
+    (_,caps,eb)=ax1.errorbar(xs+shiftFactor,fdm(xs+shiftFactor),yerr=ys,ls='',ecolor=color.next(),capsize=5,label=label[index])
     for cap in caps:
         cap.set_markeredgewidth(2)
     eb[0].set_linestyle(ls[index])
     shiftFactor+=300
         
         
-plt.xlabel('$L$',size=24)
-plt.ylabel('$C_L^{\kappa\kappa}$',size=24)
-plt.legend(loc='upper right',ncol=1,fontsize=22)
-plt.xlim([10000,38000])
-plt.ylim([1.3e-11,2.2e-10])
-plt.yscale('log')
+ax1.set_xlabel('$L$',size=24)
+ax1.set_ylabel('$C_L^{\kappa\kappa}$',size=24)
+ax1.legend(loc='upper right',ncol=1,fontsize=22)
+ax1.set_xlim([10000,38000])
+ax1.set_ylim([1.3e-11,2.2e-10])
+ax1.set_yscale('log')
+
+'''
+def tick_function(ell):
+    return ell/5000.
+ax2.set_xlim(ax1.get_xlim())
+#ax2.set_xticks(new_tick_locations)
+ax2.set_xticklabels(tick_function(Lrange))
+'''
+
+ax1Xs = ax1.get_xticks()
+
+ax2Xs = []
+for X in ax1Xs:
+    ax2Xs.append(X/5000.)
+
+ax2.set_xticks(ax1Xs)
+ax2.set_xbound(ax1.get_xbound())
+ax2.set_xticklabels(ax2Xs)
+ax2.set_xlabel('$k$ (Mpc$^{-1}$)',size=20)
+
 #plt.show()
-plt.savefig('output/dm_errorbar_15arcsec.pdf')
-#plt.savefig('output/dm_errorbar_tight.pdf', bbox_inches='tight', pad_inches=0.7)
+plt.savefig('output/dm_errorbar_cmbhd_addaxis.pdf')
